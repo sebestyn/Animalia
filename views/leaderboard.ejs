@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>TheBest</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  	<meta name="keywords" content="animalia">
+	  <link rel="shortcut icon" href="../icon.jpg">
+	<!--FONTAWSOME-->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+	<!--JQUERY-->
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<!--BOOTSTRAP-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<!--NICE ALERT BOX-->
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.all.min.js"></script>
+    <!--HASZOS FUNCTIONOK-->
+        <link rel='stylesheet' type="text/javascript" href='/hasznos.js'>
+	<!--CSS-->
+	    <link rel='stylesheet' type='text/css' href='/hasznos.css'>
+
+    </head>
+    <body style='background-color:#b0e0e6'>
+        <div class='container marginAuto'>
+            <center>
+                <h1 class="marginTop1 fontSize9vwMobile17vw fontFamilyGeorgia">Ranglista</h1>
+                <h1 class="margin1 fontSize4remMobile9vw fontFamilyGeorgia">(Room <%= szekreny %>)</h1>
+
+                <table class="table table-striped bordered table-light alignCenter marginTop1 ">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th class='width2'>#</th>
+                      <th>Név</th>
+                      <th>Pont</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% leaders.forEach(function(ember,index){ %>
+                      <tr>
+                        <th scope="row"><%= index+1 %>.</th>
+                        <td><%= ember.nev %></td>
+                        <td><%= ember.pont %></td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+                
+                <a class='btn btn-light margin1 btn-lg' href='/<%= szekreny %>'>Vissza</a>
+            </center>
+        </div>
+    </body>
+</html>
+
+

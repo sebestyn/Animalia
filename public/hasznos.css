@@ -1,0 +1,387 @@
+/*POSITION*/
+  .centerVertical{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .leftTop{
+    position: fixed;
+    top:20px;
+    left:15px;
+  }
+/*DISPLAY*/
+  .hide{
+    display: none;
+  }
+
+/*COLORS*/
+  .white{
+    color:white;
+  }
+  .black{
+    color:black;
+  }
+  .grey{
+    color:grey;
+  }
+  .bgColorBlack{
+    background-color: black;
+  }
+  .bgColorWhiteHover:hover{
+    background-color: white;
+  }
+  .colorBlackHover:hover{
+    color:black !important;
+  }
+
+/*CURSOR*/
+  .pointer{
+    cursor: pointer;
+  }
+  .noPointerEffect{
+    pointer-events:none;
+  }
+
+/*TEXT*/
+  .fontSize1{
+    font-size:1rem;
+  }
+  .fontSize1p2{
+    font-size:1.2rem;
+  }
+  .fontSize1p5{
+    font-size:1.5rem;
+  }
+  .fontSize2{
+    font-size:2rem;
+  }
+  .fontSize4{
+    font-size:4rem;
+  }
+  .fontSize5{
+    font-size:5rem;
+  }
+  .fontSize5vw{
+    font-size: 5vw
+  }
+  .fontSize6vw{
+    font-size: 6vw
+  }
+  .fontSize9vw{
+    font-size: 9vw
+  }
+  .alignCenter{
+    text-align: center;
+  }
+  .alignJustify{
+    text-align: justify;
+  }
+  .fontFamilyTimes{
+    font-family: "Times New Roman", Times, serif;
+  }
+  .fontFamilyArial{
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .fontFamilyLucida{
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  }
+  .fontFamilyCourier{
+    font-family: "Courier New", Courier, monospace;
+  }
+  .fontFamilyGeorgia{
+    font-family: Georgia, serif
+  }
+  .textDecorationNone{
+    text-decoration: none;
+  }
+  .textDecorationHoverNone:hover{
+    color:white;
+    text-decoration: none;
+  }
+  .fontSize1p5remMobile4vw{
+    font-size: 1.5rem;
+  }
+  @media only screen and (max-width: 600px) {
+    .fontSize1p5remMobile4vw{
+      font-size: 4vw;
+    }
+  }
+  .fontSize2remMobile6vw{
+    font-size: 2rem;
+  }
+  @media only screen and (max-width: 600px) {
+    .fontSize2remMobile6vw{
+      font-size: 6vw;
+    }
+  }
+  .fontSize4remMobile9vw{
+    font-size: 4rem;
+  }
+  @media only screen and (max-width: 600px) {
+    .fontSize4remMobile9vw{
+      font-size: 9vw;
+    }
+  }
+  .fontSize9vwMobile17vw{
+    font-size: 9vw;
+  }
+  @media only screen and (max-width: 600px) {
+    .fontSize9vwMobile17vw{
+      font-size: 17vw;
+    }
+  }
+  
+  
+
+/*SIZE*/
+  .width1{
+    width: 1rem;
+  }
+  .width2{
+    width: 2rem;
+  }
+  .width5{
+    width: 5rem;
+  }
+  .width10{
+    width: 10rem;
+  }
+  .width20{
+    width: 20rem;
+  }
+  .width30{
+    width: 30rem;
+  }
+  .width40{
+    width: 40rem;
+  }
+  .width100p{
+    width: 100%;
+  }
+  .width60pc{
+    width:60%;
+  }
+  .width3pc{
+    width:3%;
+  }
+  .width5pc{
+    width:5%;
+  }
+  .width20pc{
+    width:20%;
+  }
+  .width50pc{
+    width:50%;
+  }
+  .height5{
+    height: 5rem;
+  }
+  .height10{
+    height: 10rem;
+  }
+  .height20{
+    height: 20rem;
+  }
+  .height100p{
+    height: 100%;
+  }
+  .width70pcmobile98pc{
+      width:70%;
+  }
+  @media only screen and (max-width: 1000px) {
+    .width70pcmobile98pc{
+      width:98%;
+    }
+  }
+  .width85pcmobile99pc{
+      width:85%;
+  }
+  @media only screen and (max-width: 1000px) {
+    .width85pcmobile99pc{
+      width:99%;
+    }
+  }
+  .width30pcmobile90pc{
+      width:30%;
+  }
+  @media only screen and (max-width: 1000px) {
+    .width30pcmobile90pc{
+      width:90%;
+    }
+  }
+  @media only screen and (min-width: 1000px) {
+    .width50pcIfNotM{
+      width: 50%
+    }
+  }
+  
+  .maxWidth10{
+    max-width: 10rem;
+  }
+  .maxWidth60p{
+    max-width: 60%;
+  }
+  .maxWidth70p{
+    max-width: 70%;
+  }
+  .maxWidth80p{
+    max-width: 80%;
+  }
+  .maxWidth90p{
+    max-width: 90%;
+  }
+  
+  @media only screen and (min-width: 800px) {
+    .maxWidth10IfNotMobile{
+      max-width: 10rem;
+    }
+    .maxWidth60pIfNotMobile{
+      max-width: 60%;
+    }
+    .maxWidth70pIfNotMobile{
+      max-width: 70%;
+    }
+    .maxWidth80pIfNotMobile{
+      max-width: 80%;
+    }
+    .maxWidth90pIfNotMobile{
+      max-width: 90%;
+    }
+  }
+  
+/*MARGINS*/
+  .margin0{
+    margin:0rem;
+  }
+  .margin05{
+    margin:0.5rem;
+  }
+  .margin1{
+    margin: 1rem;
+  }
+  .margin1p5{
+    margin: 1.5rem;
+  }
+  .margin2{
+    margin: 2rem;
+  }
+  .margin10{
+    margin:10rem;
+  }
+  .marginTop-1{
+    margin-top: -1rem;
+  }
+  .marginTop0{
+    margin-top: 0rem;
+  }
+  .marginTop1{
+    margin-top: 1rem;
+  }
+  .marginTop1p5{
+    margin-top: 1.5rem;
+  }
+  .marginTop2{
+    margin-top: 2rem;
+  }
+  .marginTop3{
+    margin-top: 3rem;
+  }
+  .marginTop5{
+    margin-top: 5rem;
+  }
+  .marginTop10{
+    margin-top: 10rem;
+  }
+  .marginBottom0{
+    margin-bottom: 0rem;
+  }
+  .marginBottom1{
+    margin-bottom: 1rem;
+  }
+  .marginBottom2{
+    margin-bottom: 2rem;
+  }
+  .marginBottom3{
+    margin-bottom: 3rem;
+  }
+  .marginBottom5{
+    margin-bottom: 5rem;
+  }
+  .marginBottom10{
+    margin-bottom: 10rem;
+  }
+  .marginRight0p5{
+    margin-right: 0.5rem;
+  }
+  .marginLeft0p5{
+    margin-left: 0.5rem;
+  }
+  .marginAuto{
+    margin:auto;
+  }
+  .padding0{
+    padding: 0rem;
+  }
+  .padding0p5{
+    padding: 0.5rem;
+  }
+  .padding1{
+    padding: 1rem;
+  }
+  .paddingBottom1{
+    padding-bottom: 1rem;
+  }
+  
+/*DIV*/
+  .borderA{
+    border:solid 1px white;
+  }
+  .borderBlack{
+    border-color: black;
+  }
+  
+  
+/*OTHERS*/
+  .opacity0{
+    opacity: 0; 
+  }
+  #bootstrap-overrides .underline{
+    text-decoration: underline !important
+  }
+
+  .hideArrowNumberInput::-webkit-inner-spin-button, 
+  .hideArrowNumberInput::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+  }
+  .borderRadius1em{
+    border-radius: 1em;
+  }
+  .borderRadius0{
+    border-radius: 0rem;
+  }
+  .borderRadius1{
+    border-radius: 1rem;
+  }
+  .borderRadius0p5{
+    border-radius: 0.5rem;
+  }
+  .checkbox1p5x{
+     -ms-transform: scale(1.5); /* IE */
+     -moz-transform: scale(1.5); /* FF */
+     -webkit-transform: scale(1.5); /* Safari and Chrome */
+     -o-transform: scale(1.5); /* Opera */
+      padding: 5px;
+  }
+  .noselectText {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome and Opera */
+  }
+
+
