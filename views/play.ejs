@@ -158,6 +158,7 @@
                 allatszamok = shuffle(allatszamok).slice(0,3);
                 allatszamok.push(allatok[hanyadik].szam);
                 allatszamok = shuffle(allatszamok);
+                console.log(allatszamok);
                 $('#gameSpan').append('<h1 class="marginTop1 marginBottom2 fontSize9vwMobile17vw"> ' + allatok[hanyadik].nev + '</h1>');
                 $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatszamok[0] + '</div>');
                 $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatszamok[1] + '</div>');
@@ -199,6 +200,7 @@
                 allatnevek = shuffle(allatnevek).slice(0,3);
                 allatnevek.push(allatok[hanyadik].nev);
                 allatnevek = shuffle(allatnevek);
+                console.log(allatnevek);
                 $('#gameSpan').append('<h1 class="marginTop1 marginBottom2 fontSize9vwMobile17vw"> ' + allatok[hanyadik].szam + '</h1>');
                 $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatnevek[0] + '</div>');
                 $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatnevek[1] + '</div>');
@@ -206,14 +208,14 @@
                 $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatnevek[3] + '</div>');
                 $('.divValaszthato').on('click',function(){
                     $('.divValaszthato').unbind('click');
-                    if(allatok[hanyadik].nev == $(this).text().replace(/\s+/g, '')){
+                    if(allatok[hanyadik].nev.replace(/\s+/g, '') == $(this).text().replace(/\s+/g, '')){
                         talalat++
                         showpipa()
                     } else {
                         showkereszt();
                     }
                     $('.divValaszthato').each(function(){
-                       if( allatok[hanyadik].nev == $(this).text().replace(/\s+/g, '') ) {
+                       if( allatok[hanyadik].nev.replace(/\s+/g, '') == $(this).text().replace(/\s+/g, '') ) {
                            $(this).css({'background-color':'#11bf4c','color':'white'});
                        } else {
                            $(this).css({'background-color':'#ff0055','color':'white'});
