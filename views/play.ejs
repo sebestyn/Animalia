@@ -60,6 +60,12 @@
               '',
               'error'
             );
+        } else if(jatekosNev.length < 3 ||jatekosNev.length > 20) {
+            Swal.fire(
+              'Minimum 3 és maximum 20 karakterből kell, hogy álljon!',
+              '',
+              'error'
+            );
         } else {
             $('#spanStart').hide();
             $('#spanPlay').removeClass('hide');
