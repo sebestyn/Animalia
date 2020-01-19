@@ -1,4 +1,3 @@
-    var               helyiDB = false;
     var               express = require("express");
     var                   app = express();
     var            bodyParser = require("body-parser");
@@ -23,12 +22,8 @@
     var leaderDB = mongoose.model('leader',leaderboardSchema)
 
     
-//ADATBÁZIS HELYE
-    if(helyiDB){
-        mongoose.connect('mongodb://localhost/animalia', { useNewUrlParser: true });
-    }else{
-       mongoose.connect('mongodb://sebestyn:animalia2019@ds231956.mlab.com:31956/animalia', { useNewUrlParser: true });
-    }
+//ADATBÁZIS CSATLAKOZÁS
+    mongoose.connect('mongodb://sebestyn:animalia2019@ds231956.mlab.com:31956/animalia', { useNewUrlParser: true, useUnifiedTopology: true });
     
 /* 
 szekrenyDB.create({
@@ -86,7 +81,6 @@ leaderDB.create({
        var nev = req.body.nev;
        var szam = req.body.szam;
        var url = req.body.url;
-       
        szekrenyDB.findOne({'szekreny':szekreny},function(err, szekreny) {
            if(err){
                console.log(err)
@@ -132,7 +126,7 @@ leaderDB.create({
 //START OLDAL
     app.get('/:szekreny',function(req,res){
         var szekreny = Number(req.params.szekreny);
-        if(szekreny<5 && szekreny>0){
+        if(szekreny<=2 && szekreny>0){
             szekrenyDB.findOne({'szekreny':szekreny},function(err,data){
                 if(err){
                     console.log(err)
@@ -236,8 +230,9 @@ leaderDB.create({
         }
         
 //SERVER INDÍTÁSA
-    app.listen(process.env.PORT, process.env.IP, function(){
-        console.log('Animalia c9-server is RUNNING')
+    var port = process.env.PORT || 3000;
+    app.listen(port, function () {
+        console.log("ANIMALIA Server:3000 Has Started!");
     });
     
     
