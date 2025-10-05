@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('partials/head') %>
+  </head>
+  <body style="background-color: #b0e0e6">
+    <div class="admin-container">
+      <!-- Header -->
+      <div class="admin-header">
+        <h1 class="admin-title">Admin Panel</h1>
+        <div>
+          <a
+            href="/"
+            class="btn btn-secondary btn-lg"
+            style="margin-right: 1rem"
+            >Főoldal</a
+          >
+          <a href="/admin/logout" class="btn btn-danger btn-lg"
+            >Kijelentkezés</a
+          >
+        </div>
+      </div>
+
+      <!-- Create New Szekreny Section -->
+      <div class="new-szekreny-section">
+        <h2 class="section-title">Új Szekrény Létrehozása</h2>
+        <form id="createSzekrenyForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="newSzekrenyNumber">Szekrény Szám: *</label>
+              <input
+                type="number"
+                class="form-control"
+                id="newSzekrenyNumber"
+                required
+                min="1"
+                placeholder="pl. 3"
+              />
+            </div>
+            <div class="form-group">
+              <label for="newSzekrenyName">Név (opcionális):</label>
+              <input
+                type="text"
+                class="form-control"
+                id="newSzekrenyName"
+                placeholder="pl. Melléképület"
+              />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success btn-lg">
+            ➕ Szekrény Létrehozása
+          </button>
+        </form>
+      </div>
+
+      <!-- Szekrenys Container -->
+      <div id="szekrenysContainer">
+        <div class="text-center" style="padding: 3rem">
+          <p style="font-size: 1.2rem; color: #7f8c8d">Adatok betöltése...</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let szekrenysData = <%- JSON.stringify(szekrenysData) %>;
+
+      // Render data on page load
+      $(document).ready(function() {
+        renderSzekrenys();
+      });
+
+      // Render all szekrenys
+      function renderSzekrenys() {
+        const container = $('#szekrenysContainer');
+        container.empty();
+
+        if (szekrenysData.length === 0) {
+          container.html('<div class="empty-state">Még nincs egy szekrény sem. Hozz létre egyet fent!</div>');
+          return;
+        }
+
+        szekrenysData.forEach(function(szekreny, index) {
+          const card = createSzekrenyCard(szekreny, index);
+          container.append(card);
+        });
+      }
+
+      // Create szekreny card HTML
+      function createSzekrenyCard(szekreny, index) {
+        const displayName = szekreny.name || 'Room ' + szekreny.szekreny;
+
+        return `
+          <div class="szekreny-card" data-index="${index}">
+            <div class="card-header" onclick="toggleCard(${index})">
+              <div>
+                <h2>
+                  <span class="expand-icon" id="icon-${index}">▼</span>
+                  Szekrény #${szekreny.szekreny} - ${displayName}
+                </h2>
+              </div>
+              <div>
+                <button class="btn btn-success action-btn" onclick="saveSzekreny(${index}); event.stopPropagation();" style="margin-right: 0.5rem;">
+                  💾 Mentés
+                </button>
+                <button class="btn btn-danger action-btn" onclick="deleteSzekreny(${index}); event.stopPropagation();">
+                  🗑️ Törlés
+                </button>
+              </div>
+            </div>
+            <div class="card-body" id="body-${index}">
+              <!-- Name Section -->
+              <div class="card-section">
+                <h3 class="section-title">Szekrény Név</h3>
+                <div class="form-group">
+                  <input type="text" class="form-control" value="${szekreny.name}" onchange="updateSzekrenyName(${index}, this.value)" placeholder="Szekrény neve (opcionális)" />
+                </div>
+              </div>
+
+              <!-- Allatok Section -->
+              <div class="card-section">
+                <h3 class="section-title">Állatok (${szekreny.allatok.length})</h3>
+                <div id="allatok-container-${index}">
+                  ${renderAllatokEditable(szekreny.allatok, index)}
+                </div>
+                <button class="btn btn-success btn-lg" style="margin-top: 1rem;" onclick="addNewAllat(${index})">
+                  ➕ Új Állat
+                </button>
+              </div>
+
+              <!-- Leaders Section -->
+              <div class="card-section">
+                <h3 class="section-title">Ranglista (${szekreny.leaders.length})</h3>
+                <div id="leaders-container-${index}">
+                  ${renderLeadersEditable(szekreny.leaders, index)}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Render editable allatok
+      function renderAllatokEditable(allatok, szekrenyIndex) {
+        if (allatok.length === 0) {
+          return '<div class="empty-state">Még nincs állat hozzáadva</div>';
+        }
+
+        let html = '<table class="admin-table"><thead><tr><th>Név</th><th>Szám</th><th>URL (opcionális)</th><th style="width: 100px;">Műveletek</th></tr></thead><tbody>';
+
+        allatok.forEach((allat, allatIndex) => {
+          html += `
+            <tr>
+              <td><input type="text" class="form-control" value="${allat.nev}" onchange="updateAllat(${szekrenyIndex}, ${allatIndex}, 'nev', this.value)" /></td>
+              <td><input type="number" class="form-control" value="${allat.szam}" onchange="updateAllat(${szekrenyIndex}, ${allatIndex}, 'szam', this.value)" style="width: 100px;" /></td>
+              <td><input type="url" class="form-control" value="${allat.url || ''}" onchange="updateAllat(${szekrenyIndex}, ${allatIndex}, 'url', this.value)" placeholder="Wikipedia link" /></td>
+              <td>
+                <button class="btn btn-danger action-btn" onclick="deleteAllat(${szekrenyIndex}, ${allatIndex})">
+                  🗑️
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+
+        html += '</tbody></table>';
+        return html;
+      }
+
+      // Render editable leaders
+      function renderLeadersEditable(leaders, szekrenyIndex) {
+        if (leaders.length === 0) {
+          return '<div class="empty-state">Még nincs eredmény</div>';
+        }
+
+        // Sort by date
+        const sorted = [...leaders].sort((a, b) => new Date(b.created) - new Date(a.created));
+
+        let html = '<table class="admin-table"><thead><tr><th>Név</th><th>Pont</th><th>Dátum</th><th style="width: 100px;">Műveletek</th></tr></thead><tbody>';
+
+        sorted.forEach((leader, leaderIndex) => {
+          // Find original index
+          const originalIndex = leaders.findIndex(l => l.nev === leader.nev && l.pont === leader.pont);
+          const date = new Date(leader.created);
+
+          html += `
+            <tr>
+              <td>${leader.nev}</td>
+              <td>${leader.pont}</td>
+              <td>${date.toLocaleDateString()}</td>
+              <td>
+                <button class="btn btn-danger action-btn" onclick="deleteLeader(${szekrenyIndex}, ${originalIndex})">
+                  🗑️
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+
+        html += '</tbody></table>';
+        return html;
+      }
+
+      // Toggle card open/close
+      function toggleCard(index) {
+        const body = $(`#body-${index}`);
+        const icon = $(`#icon-${index}`);
+
+        body.toggleClass('active');
+        icon.toggleClass('rotated');
+      }
+
+      // Update szekreny name
+      function updateSzekrenyName(index, newName) {
+        szekrenysData[index].name = newName;
+        renderSzekrenys();
+      }
+
+      // Update allat field
+      function updateAllat(szekrenyIndex, allatIndex, field, value) {
+        szekrenysData[szekrenyIndex].allatok[allatIndex][field] = value;
+      }
+
+      // Add new allat
+      function addNewAllat(szekrenyIndex) {
+        szekrenysData[szekrenyIndex].allatok.push({
+          nev: '',
+          szam: 1,
+          url: ''
+        });
+        refreshSzekreny(szekrenyIndex);
+      }
+
+      // Delete allat
+      function deleteAllat(szekrenyIndex, allatIndex) {
+        szekrenysData[szekrenyIndex].allatok.splice(allatIndex, 1);
+        refreshSzekreny(szekrenyIndex);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          type: 'success',
+          title: 'Állat törölve! Ne felejts el menteni!',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+
+      // Delete leader
+      function deleteLeader(szekrenyIndex, leaderIndex) {
+        szekrenysData[szekrenyIndex].leaders.splice(leaderIndex, 1);
+        refreshSzekreny(szekrenyIndex);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          type: 'success',
+          title: 'Leader törölve! Ne felejts el menteni!',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+
+      // Refresh single szekreny display
+      function refreshSzekreny(index) {
+        const szekreny = szekrenysData[index];
+
+        $(`#szekreny-name-${index}`).text(szekreny.name);
+        $(`#allatok-container-${index}`).html(renderAllatokEditable(szekreny.allatok, index));
+        $(`#leaders-container-${index}`).html(renderLeadersEditable(szekreny.leaders, index));
+
+        // Update counts in header
+        $(`.szekreny-card[data-index="${index}"] .section-title`).each(function() {
+          if ($(this).text().includes('Állatok')) {
+            $(this).text(`Állatok (${szekreny.allatok.length})`);
+          } else if ($(this).text().includes('Ranglista')) {
+            $(this).text(`Ranglista (${szekreny.leaders.length})`);
+          }
+        });
+      }
+
+      // Save szekreny data to server
+      function saveSzekreny(index) {
+        const szekreny = szekrenysData[index];
+
+        // Validate
+        for (let allat of szekreny.allatok) {
+          if (!allat.nev || !allat.szam) {
+            Swal.fire('Hiba!', 'Minden állatnak kell név és szám!', 'error');
+            return;
+          }
+        }
+
+        $.ajax({
+          type: 'PUT',
+          url: `/admin/szekreny/${szekreny._id}/save`,
+          contentType: 'application/json',
+          data: JSON.stringify({
+            name: szekreny.name,
+            allatok: szekreny.allatok,
+            leaders: szekreny.leaders
+          }),
+          success: function(response) {
+            if (response.success) {
+              Swal.fire('Siker!', response.message, 'success');
+            }
+          },
+          error: function() {
+            Swal.fire('Hiba!', 'Nem sikerült menteni!', 'error');
+          }
+        });
+      }
+
+      // Create new szekreny
+      $('#createSzekrenyForm').on('submit', function(e) {
+        e.preventDefault();
+
+        const szekreny = $('#newSzekrenyNumber').val();
+        const name = $('#newSzekrenyName').val();
+
+        $.ajax({
+          type: 'POST',
+          url: '/admin/szekreny/create',
+          contentType: 'application/json',
+          data: JSON.stringify({ szekreny, name }),
+          success: function(response) {
+            if (response.success) {
+              Swal.fire('Siker!', response.message, 'success').then(() => {
+                window.location.reload();
+              });
+              $('#createSzekrenyForm')[0].reset();
+            }
+          },
+          error: function(xhr) {
+            const error = xhr.responseJSON?.error || 'Hiba történt!';
+            Swal.fire('Hiba!', error, 'error');
+          }
+        });
+      });
+
+      // Delete szekreny
+      function deleteSzekreny(index) {
+        const szekreny = szekrenysData[index];
+
+        // Debug logging
+        console.log('Deleting szekreny:', szekreny);
+        console.log('Szekreny ID:', szekreny._id);
+
+        if (!szekreny._id) {
+          Swal.fire('Hiba!', 'Adatbázis azonosító hiányzik!', 'error');
+          return;
+        }
+
+        Swal.fire({
+          title: 'Biztos vagy benne?',
+          text: `A Szekrény #${szekreny.szekreny} és az összes adata véglegesen törlődni fog!`,
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#e74c3c',
+          cancelButtonColor: '#95a5a6',
+          confirmButtonText: 'Igen, törlöm!',
+          cancelButtonText: 'Mégse'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            console.log('Making DELETE request to:', `/admin/szekreny/${szekreny._id}`);
+            $.ajax({
+              type: 'DELETE',
+              url: `/admin/szekreny/${szekreny._id}`,
+              success: function(response) {
+                console.log('Delete success:', response);
+                if (response.success) {
+                  Swal.fire('Törölve!', response.message, 'success').then(() => {
+                    window.location.reload();
+                  });
+                }
+              },
+              error: function(xhr, status, error) {
+                console.error('Delete error:', xhr, status, error);
+                Swal.fire('Hiba!', 'Nem sikerült törölni: ' + error, 'error');
+              }
+            });
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -2,11 +2,33 @@ import express from "express";
 const app = express();
 import { Schema, model, connect } from "mongoose";
 import { config } from "dotenv";
+import session from "express-session";
 config();
 
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Session configuration
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60, // 1 hour
+    },
+  })
+);
+
+// Authentication middleware
+function requireAuth(req, res, next) {
+  if (req.session && req.session.isAuthenticated) {
+    return next();
+  }
+  res.redirect("/admin/login");
+}
 
 //DATABASE
 var szekrenySchema = new Schema({
@@ -37,121 +59,268 @@ var leaderDB = model("leader", leaderboardSchema);
 //ADATBÁZIS CSATLAKOZÁS
 connect(process.env.DB_URL);
 
+//ADMIN LOGIN PAGE
+app.get("/admin/login", function (req, res) {
+  if (req.session && req.session.isAuthenticated) {
+    return res.redirect("/admin");
+  }
+  res.render("admin-login.ejs", { error: null });
+});
+
+//ADMIN LOGIN POST
+app.post("/admin/login", function (req, res) {
+  const { password } = req.body;
+  if (password === process.env.ADMIN_PASSWORD) {
+    req.session.isAuthenticated = true;
+    res.redirect("/admin");
+  } else {
+    res.render("admin-login.ejs", { error: "Helytelen jelszó!" });
+  }
+});
+
+//ADMIN LOGOUT
+app.get("/admin/logout", function (req, res) {
+  req.session.destroy();
+  res.redirect("/admin/login");
+});
+
+//ADMIN DASHBOARD
+app.get("/admin", requireAuth, async function (req, res) {
+  try {
+    const szekrenys = await szekrenyDB.find({}).sort({ szekreny: 1 });
+    const leaders = await leaderDB.find({});
+
+    // Combine data
+    const data = szekrenys.map((szekreny) => {
+      const leaderData = leaders.find((l) => l.szekreny === szekreny.szekreny);
+      return {
+        _id: szekreny._id.toString(),
+        szekreny: szekreny.szekreny,
+        name: szekreny.name || "",
+        allatok: szekreny.allatok.map((a) => ({
+          nev: a.nev,
+          szam: a.szam,
+          url: a.url || "",
+        })),
+        leaders: leaderData
+          ? leaderData.leaders.map((l) => ({
+              nev: l.nev,
+              pont: l.pont,
+              created: l.created,
+            }))
+          : [],
+      };
+    });
+
+    res.render("admin.ejs", { szekrenysData: data });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Error loading admin page");
+  }
+});
+
+//CREATE NEW SZEKRENY
+app.post("/admin/szekreny/create", requireAuth, async function (req, res) {
+  const { szekreny, name } = req.body;
+  try {
+    // Check if szekreny number already exists
+    const existing = await szekrenyDB.findOne({ szekreny: Number(szekreny) });
+    if (existing) {
+      return res
+        .status(400)
+        .json({ success: false, error: "Ez a szekrény szám már létezik!" });
+    }
+
+    // Create new szekreny
+    const newSzekreny = new szekrenyDB({
+      szekreny: Number(szekreny),
+      name: name || "",
+      allatok: [],
+    });
+    await newSzekreny.save();
+
+    // Create corresponding leaderboard
+    const newLeader = new leaderDB({
+      szekreny: Number(szekreny),
+      leaders: [],
+    });
+    await newLeader.save();
+
+    res.json({
+      success: true,
+      message: "Szekrény sikeresen létrehozva!",
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, error: "Hiba történt!" });
+  }
+});
+
+//SAVE SZEKRENY DATA - Overwrites entire szekreny and its leaders
+app.put("/admin/szekreny/:id/save", requireAuth, async function (req, res) {
+  const { id } = req.params;
+  const { name, allatok, leaders } = req.body;
+
+  try {
+    // Update szekreny
+    const szekreny = await szekrenyDB.findById(id);
+    if (!szekreny) {
+      return res
+        .status(404)
+        .json({ success: false, error: "Szekrény nem található!" });
+    }
+
+    szekreny.name = name || "";
+    szekreny.allatok = allatok.map((a) => ({
+      nev: a.nev,
+      szam: Number(a.szam),
+      url: a.url || "",
+    }));
+    await szekreny.save();
+
+    // Update leaders
+    const leaderDoc = await leaderDB.findOne({ szekreny: szekreny.szekreny });
+    if (leaderDoc) {
+      leaderDoc.leaders = leaders.map((l) => ({
+        nev: l.nev,
+        pont: Number(l.pont),
+        created: l.created ? new Date(l.created) : new Date(),
+      }));
+      await leaderDoc.save();
+    }
+
+    res.json({ success: true, message: "Adatok sikeresen mentve!" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, error: "Hiba történt!" });
+  }
+});
+
+//DELETE SZEKRENY
+app.delete("/admin/szekreny/:id", requireAuth, async function (req, res) {
+  const { id } = req.params;
+  try {
+    const szekreny = await szekrenyDB.findById(id);
+    if (!szekreny) {
+      return res
+        .status(404)
+        .json({ success: false, error: "Szekrény nem található!" });
+    }
+
+    // Delete leaderboard too
+    await leaderDB.deleteOne({ szekreny: szekreny.szekreny });
+    await szekrenyDB.findByIdAndDelete(id);
+
+    res.json({ success: true, message: "Szekrény törölve!" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, error: "Hiba történt!" });
+  }
+});
+
 //HOME OLDAL
 app.get("/", function (req, res) {
   res.render("home.ejs");
 });
 
-//HOZZÁADÁS ADMIN OLDAL
-app.get("/pushAdmin", function (req, res) {
-  res.render("push.ejs");
-});
-app.post("/push", async function (req, res) {
-  var szekreny = req.body.szekreny;
-  var nev = req.body.nev;
-  var szam = req.body.szam;
-  var url = req.body.url;
-  try {
-    const szekrenyDoc = await szekrenyDB.findOne({ szekreny: szekreny });
-    szekrenyDoc.allatok.push({
-      nev: nev,
-      szam: szam,
-      url: url,
-    });
-    await szekrenyDoc.save();
-    res.status(200).send({ success: nev });
-  } catch (err) {
-    console.log(err);
-    res.status(500).send({ error: "Failed to save" });
-  }
-});
-
 //LEADERTABLES
 app.get("/:szekreny/leader", async function (req, res) {
   var szekreny = Number(req.params.szekreny);
-  if (szekreny < 5 && szekreny > 0) {
-    try {
-      const data = await szekrenyDB.findOne({ szekreny: szekreny });
-      const leader = await leaderDB.findOne({ szekreny: szekreny });
-      var leaders = filterBySchoolYear(leader.leaders);
-      leaders = sortObj(leaders, "pont");
-      leaders.reverse();
-      res.render("leaderboard.ejs", {
-        szekreny: szekreny,
-        roomName: data?.name || null,
-        leaders: leaders,
-      });
-    } catch (err) {
-      console.log(err);
-      res.status(500).send("Error loading leaderboard");
+  if (isNaN(szekreny) || szekreny <= 0) {
+    return res.redirect("/");
+  }
+
+  try {
+    const data = await szekrenyDB.findOne({ szekreny: szekreny });
+    if (!data) {
+      return res.redirect("/");
     }
-  } else {
-    res.redirect("/");
+
+    const leader = await leaderDB.findOne({ szekreny: szekreny });
+    var leaders = leader ? filterBySchoolYear(leader.leaders) : [];
+    leaders = sortObj(leaders, "pont");
+    leaders.reverse();
+    res.render("leaderboard.ejs", {
+      szekreny: szekreny,
+      roomName: data?.name || null,
+      leaders: leaders,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Error loading leaderboard");
   }
 });
 
 //START OLDAL
 app.get("/:szekreny", async function (req, res) {
   var szekreny = Number(req.params.szekreny);
-  if (szekreny <= 2 && szekreny > 0) {
-    try {
-      const data = await szekrenyDB.findOne({ szekreny: szekreny });
-      const leader = await leaderDB.findOne({ szekreny: szekreny });
-      var leaders =
-        leader && leader.leaders ? filterBySchoolYear(leader.leaders) : [];
-      leaders = sortObj(leaders, "pont");
-      leaders.reverse();
-      leaders = leaders.slice(0, 3);
-      res.render("start.ejs", {
-        szekreny: szekreny,
-        roomName: data?.name || null,
-        leaders: leaders,
-      });
-    } catch (err) {
-      console.log(err);
-      res.status(500).send("Error loading page");
+  if (isNaN(szekreny) || szekreny <= 0) {
+    return res.redirect("/");
+  }
+
+  try {
+    const data = await szekrenyDB.findOne({ szekreny: szekreny });
+    if (!data) {
+      return res.redirect("/");
     }
-  } else {
-    res.redirect("/");
+
+    const leader = await leaderDB.findOne({ szekreny: szekreny });
+    var leaders =
+      leader && leader.leaders ? filterBySchoolYear(leader.leaders) : [];
+    leaders = sortObj(leaders, "pont");
+    leaders.reverse();
+    leaders = leaders.slice(0, 3);
+    res.render("start.ejs", {
+      szekreny: szekreny,
+      roomName: data?.name || null,
+      leaders: leaders,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Error loading page");
   }
 });
 
 //PLAY OLDAL
 app.get("/:szekreny/play", async function (req, res) {
   var szekreny = Number(req.params.szekreny);
-  if (szekreny < 5 && szekreny > 0) {
-    try {
-      const data = await szekrenyDB.findOne({ szekreny: szekreny });
-      var allatok = data.allatok;
-      shuffle(allatok);
-      allatok = allatok.slice(0, 10);
-      var szamok = [];
-      var nevek = [];
-      data.allatok.forEach(function (allat) {
-        szamok.push(allat.szam);
-        nevek.push(allat.nev);
-      });
+  if (isNaN(szekreny) || szekreny <= 0) {
+    return res.redirect("/");
+  }
 
-      // Get existing player names from leaderboard
-      const leaderData = await leaderDB.findOne({ szekreny: szekreny });
-      const existingNames = leaderData
-        ? leaderData.leaders.map((l) => l.nev)
-        : [];
-
-      res.render("play.ejs", {
-        szekreny: szekreny,
-        roomName: data?.name || null,
-        allatok: allatok,
-        szamok: szamok,
-        nevek: nevek,
-        existingNames: existingNames,
-      });
-    } catch (err) {
-      console.log(err);
-      res.status(500).send("Error loading game");
+  try {
+    const data = await szekrenyDB.findOne({ szekreny: szekreny });
+    if (!data) {
+      return res.redirect("/");
     }
-  } else {
-    res.redirect("/");
+
+    var allatok = data.allatok;
+    shuffle(allatok);
+    allatok = allatok.slice(0, 10);
+    var szamok = [];
+    var nevek = [];
+    data.allatok.forEach(function (allat) {
+      szamok.push(allat.szam);
+      nevek.push(allat.nev);
+    });
+
+    // Get existing player names from leaderboard
+    const leaderData = await leaderDB.findOne({ szekreny: szekreny });
+    const existingNames = leaderData
+      ? leaderData.leaders.map((l) => l.nev)
+      : [];
+
+    res.render("play.ejs", {
+      szekreny: szekreny,
+      roomName: data?.name || null,
+      allatok: allatok,
+      szamok: szamok,
+      nevek: nevek,
+      existingNames: existingNames,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Error loading game");
   }
 });
 
@@ -196,22 +365,6 @@ app.post("/newResult", async function (req, res) {
   } catch (err) {
     console.log(err);
     res.status(500).send({ error: "Failed to save result" });
-  }
-});
-
-// Clear DB
-app.get("/db/clear", async function (req, res) {
-  try {
-    const data = await leaderDB.find({});
-    for (const szekreny of data) {
-      szekreny.leaders = [];
-      await szekreny.save();
-      console.log("Sikeres törlés (" + szekreny.szekreny + ")");
-    }
-    res.redirect("/");
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Error clearing database");
   }
 });
 

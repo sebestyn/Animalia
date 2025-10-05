@@ -181,7 +181,6 @@
                   allatszamok = shuffle(allatszamok).slice(0,3);
                   allatszamok.push(allatok[hanyadik].szam);
                   allatszamok = shuffle(allatszamok);
-                  console.log(allatszamok);
                   $('#gameSpan').append('<h1 class="marginTop1 marginBottom2 fontSize9vwMobile17vw"> ' + allatok[hanyadik].nev + '</h1>');
                   $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatszamok[0] + '</div>');
                   $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatszamok[1] + '</div>');
@@ -204,7 +203,7 @@
                          }
                       });
                       $('#gameSpan').children().css('opacity','0.6');
-                      $('#gameSpan').append('<p class="marginTop1 fontSize5vw" id="kattKoviert"><u>Kattints bárhova a következőért!</u></p>');
+                      $('#gameSpan').append('<p class="marginTop1 fontSize2" id="kattKoviert"><u>Kattints bárhova a következőért!</u></p>');
                       $('#kattKoviert').css('opacity','1');
                       setTimeout(function(){
                           $('body').on('click',function(){
@@ -245,7 +244,7 @@
                          }
                       });
                       $('#gameSpan').children().css('opacity','0.6');
-                      $('#gameSpan').append('<p class="marginTop1 fontSize5vw" id="kattKoviert"><u>Kattints bárhova a következőért!</u></p>');
+                      $('#gameSpan').append('<p class="marginTop1 fontSize2" id="kattKoviert"><u>Kattints bárhova a következőért!</u></p>');
                       $('#kattKoviert').css('opacity','1');
                       setTimeout(function(){
                           $('body').on('click',function(){

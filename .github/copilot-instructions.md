@@ -74,7 +74,6 @@ docker-compose up -d  # Runs on port 4001, connects to nginx-proxy-manager netwo
 ### Admin Routes
 - `/pushAdmin` (GET): Admin UI for adding animals
 - `/push` (POST): Add animal to room
-- `/db/clear` (GET): **Dangerous** - clears all leaderboards
 
 ## Code Style Notes
 - Comments and some strings in Hungarian (legacy)
