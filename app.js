@@ -1,43 +1,38 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-dotenv.config();
+import { Schema, model, connect } from "mongoose";
+import { config } from "dotenv";
+config();
 
-//USE
 app.use(express.static("public"));
-app.use(
-  bodyParser.urlencoded({
-    limit: "50mb",
-    extended: true,
-    parameterLimit: 100000,
-  })
-);
-app.use(express.json({ limit: "100mb" }));
 
 //DATABASE
-var szekrenySchema = new mongoose.Schema({
+var szekrenySchema = new Schema({
   szekreny: Number,
-  allatok: Array,
+  allatok: [
+    {
+      nev: String,
+      szam: Number,
+      url: String,
+    },
+  ],
 });
-var szekrenyDB = mongoose.model("szekreny", szekrenySchema);
+var szekrenyDB = model("szekreny", szekrenySchema);
 
-var leaderboardSchema = new mongoose.Schema({
+var leaderboardSchema = new Schema({
   szekreny: Number,
   leaders: [
     {
       nev: String,
       pont: Number,
-      created: { type: Date, default: Date.now() },
+      created: { type: Date, default: Date.now },
     },
   ],
 });
-var leaderDB = mongoose.model("leader", leaderboardSchema);
+var leaderDB = model("leader", leaderboardSchema);
 
 //ADATBÁZIS CSATLAKOZÁS
-const db_url = process.env.DB_URL;
-mongoose.connect(db_url, { useNewUrlParser: true, useUnifiedTopology: true });
+connect(process.env.DB_URL);
 
 //HOME OLDAL
 app.get("/", function (req, res) {
@@ -53,158 +48,132 @@ app.get("/info", function (req, res) {
 app.get("/pushAdmin", function (req, res) {
   res.render("push.ejs");
 });
-app.post("/push", function (req, res) {
+app.post("/push", async function (req, res) {
   var szekreny = req.body.szekreny;
   var nev = req.body.nev;
   var szam = req.body.szam;
   var url = req.body.url;
-  szekrenyDB.findOne({ szekreny: szekreny }, function (err, szekreny) {
-    if (err) {
-      console.log(err);
-    } else {
-      szekreny.allatok.push({
-        nev: nev,
-        szam: szam,
-        url: url,
-      });
-      szekreny.save(function (err, data) {
-        if (err) {
-          console.log(err);
-        }
-      });
-    }
-  });
-  res.status(200).send({ success: nev });
+  try {
+    const szekrenyDoc = await szekrenyDB.findOne({ szekreny: szekreny });
+    szekrenyDoc.allatok.push({
+      nev: nev,
+      szam: szam,
+      url: url,
+    });
+    await szekrenyDoc.save();
+    res.status(200).send({ success: nev });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ error: "Failed to save" });
+  }
 });
 
 //LEADERTABLES
-app.get("/:szekreny/leader", function (req, res) {
+app.get("/:szekreny/leader", async function (req, res) {
   var szekreny = Number(req.params.szekreny);
   if (szekreny < 5 && szekreny > 0) {
-    szekrenyDB.findOne({ szekreny: szekreny }, function (err, data) {
-      if (err) {
-        console.log(err);
-      } else {
-        leaderDB.findOne({ szekreny: szekreny }, function (err, leader) {
-          if (err) {
-            console.log(err);
-          } else {
-            var leaders = leader.leaders;
-            res.render("leaderboard.ejs", {
-              szekreny: szekreny,
-              leaders: leaders,
-            });
-          }
-        });
-      }
-    });
+    try {
+      const data = await szekrenyDB.findOne({ szekreny: szekreny });
+      const leader = await leaderDB.findOne({ szekreny: szekreny });
+      var leaders = leader.leaders;
+      res.render("leaderboard.ejs", {
+        szekreny: szekreny,
+        leaders: leaders,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send("Error loading leaderboard");
+    }
   } else {
     res.redirect("/");
   }
 });
 
 //START OLDAL
-app.get("/:szekreny", function (req, res) {
+app.get("/:szekreny", async function (req, res) {
   var szekreny = Number(req.params.szekreny);
   if (szekreny <= 2 && szekreny > 0) {
-    szekrenyDB.findOne({ szekreny: szekreny }, function (err, data) {
-      if (err) {
-        console.log(err);
-      } else {
-        leaderDB.findOne({ szekreny: szekreny }, function (err, leader) {
-          if (err) {
-            console.log(err);
-          } else {
-            var leaders =
-              leader && leader.leaders ? leader.leaders.slice(0, 3) : [];
-            res.render("start.ejs", { szekreny: szekreny, leaders: leaders });
-          }
-        });
-      }
-    });
+    try {
+      const data = await szekrenyDB.findOne({ szekreny: szekreny });
+      const leader = await leaderDB.findOne({ szekreny: szekreny });
+      var leaders = leader && leader.leaders ? leader.leaders.slice(0, 3) : [];
+      res.render("start.ejs", { szekreny: szekreny, leaders: leaders });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send("Error loading page");
+    }
   } else {
     res.redirect("/");
   }
 });
 
 //PLAY OLDAL
-app.get("/:szekreny/play", function (req, res) {
+app.get("/:szekreny/play", async function (req, res) {
   var szekreny = Number(req.params.szekreny);
   if (szekreny < 5 && szekreny > 0) {
-    szekrenyDB.findOne({ szekreny: szekreny }, function (err, data) {
-      if (err) {
-        console.log(err);
-      } else {
-        var allatok = data.allatok;
-        shuffle(allatok);
-        allatok = allatok.slice(0, 10);
-        var szamok = [];
-        var nevek = [];
-        data.allatok.forEach(function (allat) {
-          szamok.push(allat.szam);
-          nevek.push(allat.nev);
-        });
-        res.render("play.ejs", {
-          szekreny: szekreny,
-          allatok: allatok,
-          szamok: szamok,
-          nevek: nevek,
-        });
-      }
-    });
+    try {
+      const data = await szekrenyDB.findOne({ szekreny: szekreny });
+      var allatok = data.allatok;
+      shuffle(allatok);
+      allatok = allatok.slice(0, 10);
+      var szamok = [];
+      var nevek = [];
+      data.allatok.forEach(function (allat) {
+        szamok.push(allat.szam);
+        nevek.push(allat.nev);
+      });
+      res.render("play.ejs", {
+        szekreny: szekreny,
+        allatok: allatok,
+        szamok: szamok,
+        nevek: nevek,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send("Error loading game");
+    }
   } else {
     res.redirect("/");
   }
 });
 //ÚJ EREDMÉNY MENTÉSE
-app.post("/newResult", function (req, res) {
+app.post("/newResult", async function (req, res) {
   var szekreny = req.body.szekreny;
   var nev = req.body.nev;
   var pont = req.body.pont;
   var hanyadik = 0;
-  leaderDB.findOne({ szekreny: szekreny }, function (err, szekreny) {
-    if (err) {
-      console.log(err);
-    } else {
-      szekreny.leaders.push({
-        nev: nev,
-        pont: pont,
-      });
-      szekreny.leaders = sortObj(szekreny.leaders, "pont");
-      szekreny.leaders.reverse();
-      var index = szekreny.leaders.findIndex((x) => x.nev == nev);
-      hanyadik = index + 1;
-      szekreny.save(function (err) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.status(200).send({ success: hanyadik });
-        }
-      });
-    }
-  });
+  try {
+    const szekrenyDoc = await leaderDB.findOne({ szekreny: szekreny });
+    szekrenyDoc.leaders.push({
+      nev: nev,
+      pont: pont,
+    });
+    szekrenyDoc.leaders = sortObj(szekrenyDoc.leaders, "pont");
+    szekrenyDoc.leaders.reverse();
+    var index = szekrenyDoc.leaders.findIndex((x) => x.nev == nev);
+    hanyadik = index + 1;
+    await szekrenyDoc.save();
+    res.status(200).send({ success: hanyadik });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ error: "Failed to save result" });
+  }
 });
 
 // Clear DB
-app.get("/db/clear", function (req, res) {
-  leaderDB.find({}, function (err, data) {
-    if (err) {
-      console.log(err);
-    } else {
-      data.forEach(function (szekreny) {
-        szekreny.leaders = [];
-        szekreny.save(function (err) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log("Sikeres törlés (" + szekreny.szekreny + ")");
-          }
-        });
-      });
+app.get("/db/clear", async function (req, res) {
+  try {
+    const data = await leaderDB.find({});
+    for (const szekreny of data) {
+      szekreny.leaders = [];
+      await szekreny.save();
+      console.log("Sikeres törlés (" + szekreny.szekreny + ")");
     }
-  });
-
-  res.redirect("/");
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Error clearing database");
+  }
 });
 
 //FUNCTION

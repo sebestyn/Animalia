@@ -1,295 +1,341 @@
 <!DOCTYPE html>
 <html>
-    <head>
+  <head>
     <title>Animalia</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  	<meta name="keywords" content="animalia">
-	  <link rel="shortcut icon" href="../icon.jpg">
-	<!--FONTAWSOME-->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-	<!--JQUERY-->
-		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-	<!--BOOTSTRAP-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-	    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-	<!--NICE ALERT BOX-->
-    	<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.all.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="keywords" content="animalia" />
+    <link rel="shortcut icon" href="../icon.jpg" />
+    <!--FONTAWSOME-->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous"
+    />
+    <!--JQUERY-->
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"
+    ></script>
+    <!--BOOTSTRAP-->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <!--NICE ALERT BOX-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.all.min.js"></script>
     <!--HASZOS FUNCTIONOK-->
-        <link rel='stylesheet' type="text/javascript" href='/hasznos.js'>
-	<!--CSS-->
-	    <link rel='stylesheet' type='text/css' href='/hasznos.css'>
-	    <link rel='stylesheet' type='text/css' href='/play.css'>
+    <link rel="stylesheet" type="text/javascript" href="/hasznos.js" />
+    <!--CSS-->
+    <link rel="stylesheet" type="text/css" href="/hasznos.css" />
+    <link rel="stylesheet" type="text/css" href="/play.css" />
+  </head>
+  <body style="background-color: #b0e0e6">
+    <div class="container marginAuto">
+      <center>
+        <img
+          src="/pipa.png"
+          id="pipaKep"
+          style="opacity: 0"
+          class="margin0"
+          height="80"
+          width="80"
+        />
+        <img
+          src="/kereszt.png"
+          id="keresztKep"
+          style="opacity: 0"
+          class="margin0 hide"
+          height="80"
+          width="80"
+        />
 
-    </head>
-    <body style='background-color:#b0e0e6'>
-        <div class='container marginAuto'>
-            <center>
-                <img src="/pipa.png" id="pipaKep"    style="opacity:0" class="margin0" height="80" width="80">
-                <img src="/kereszt.png" id="keresztKep" style="opacity:0" class="margin0 hide" height="80" width="80">
-                
-                <span id='spanStart'>
-                    <div class='centerVertical'>
-                        <h1 class="marginTop1 fontSize9vwMobile17vw fontFamilyGeorgia">Animalia</h1>
-                        <h1 class="margin1 fontSize4remMobile9vw fontFamilyGeorgia">(Room <%= szekreny %>)</h1>
-        
-                        
-                        <div class="input-group mb-3 width30pcmobile90pc marginTop3">
-                          <input type="text" class="form-control nev alignCenter" placeholder="Játékos neve" aria-describedby="basic-addon1" autofocus>
-                        </div>
-                        <a class='btn btn-light margin1 btn-lg play'>Indítás</a>
-                        <p style='font-size:0.7rem'>Indítás gomb megnyovásával hozzájárulok, hogy a nevemet és a szerzett pontomat bárki láthatja és felhasználhatja.</p>
-                    </div>
-                </span>
-                <span id='spanPlay' class='hide'></span>
-            </center>
-        </div>
-    </body>
+        <span id="spanStart">
+          <div class="centerVertical">
+            <h1 class="marginTop1 fontSize9vwMobile17vw fontFamilyGeorgia">
+              Animalia
+            </h1>
+            <h1 class="margin1 fontSize4remMobile9vw fontFamilyGeorgia">
+              (Room <%= szekreny %>)
+            </h1>
+
+            <div class="input-group mb-3 width30pcmobile90pc marginTop3">
+              <input
+                type="text"
+                class="form-control nev alignCenter"
+                placeholder="Játékos neve"
+                aria-describedby="basic-addon1"
+                autofocus
+              />
+            </div>
+            <a class="btn btn-light margin1 btn-lg play">Indítás</a>
+            <p style="font-size: 0.7rem">
+              Indítás gomb megnyovásával hozzájárulok, hogy a nevemet és a
+              szerzett pontomat bárki láthatja és felhasználhatja.
+            </p>
+          </div>
+        </span>
+        <span id="spanPlay" class="hide"></span>
+      </center>
+    </div>
+  </body>
 </html>
 
-
-
 <script>
-    $('.play').on('click',function(){
-        var jatekosNev = $('.nev').val();
-        if(jatekosNev == ''){
-            Swal.fire(
-              'Nem lehet üres!',
-              '',
-              'error'
-            );
-        } else if(jatekosNev.length < 3 ||jatekosNev.length > 20) {
-            Swal.fire(
-              'Minimum 3 és maximum 20 karakterből kell, hogy álljon!',
-              '',
-              'error'
-            );
-        } else {
-            $('#spanStart').hide();
-            $('#spanPlay').removeClass('hide');
-            $('#spanPlay').append('<h1 class="timer fontSize2remMobile6vw"><span id="min">00</span>:<span id="sec">00</span></h1>');
-            $('#spanPlay').append('<h1 class="hanyadik fontSize2remMobile6vw"><span id="hanyadik">1</span>/<span>10</span></h1>');
-            $('#spanPlay').append('<span id="gameSpan"></span>');
-            var allatok =  <%- JSON.stringify(allatok) %>;
-            var allatnevek =  <%- JSON.stringify(nevek) %>;
-            var allatszamok =  <%- JSON.stringify(szamok) %>;
-            var szekreny = <%- szekreny %>;
-            var hanyadik = 0;
-            var talalat = 0;
-            timerStart();
-            play();
-            
-        }
+      $('.play').on('click',function(){
+          var jatekosNev = $('.nev').val();
+          if(jatekosNev == ''){
+              Swal.fire(
+                'Nem lehet üres!',
+                '',
+                'error'
+              );
+          } else if(jatekosNev.length < 3 ||jatekosNev.length > 20) {
+              Swal.fire(
+                'Minimum 3 és maximum 20 karakterből kell, hogy álljon!',
+                '',
+                'error'
+              );
+          } else {
+              $('#spanStart').hide();
+              $('#spanPlay').removeClass('hide');
+              $('#spanPlay').append('<h1 class="timer fontSize2remMobile6vw"><span id="min">00</span>:<span id="sec">00</span></h1>');
+              $('#spanPlay').append('<h1 class="hanyadik fontSize2remMobile6vw"><span id="hanyadik">1</span>/<span>10</span></h1>');
+              $('#spanPlay').append('<span id="gameSpan"></span>');
+              var allatok =  <%- JSON.stringify(allatok) %>;
+              var allatnevek =  <%- JSON.stringify(nevek) %>;
+              var allatszamok =  <%- JSON.stringify(szamok) %>;
+              var szekreny = <%- szekreny %>;
+              var hanyadik = 0;
+              var talalat = 0;
+              timerStart();
+              play();
+
+          }
 
 
-//FUNCTIONS
-    var timerSec = 0;
-    var timerMin = 0;
-    function timerStart(){
-            timerSec = 0;
-            timerMin = 0;
-            setInterval(function(){
-                timerSec++;
-                if(timerSec>59){
-                    timerMin++;
-                    timerSec=0;
-                    if(timerMin.toString().length == 1){
-                        $('#min').text('0'+timerMin);
-                    } else {
-                        $('#min').text(timerMin);
-                    }
-                }
-                if(timerSec.toString().length == 1){
-                    $('#sec').text('0'+timerSec);
-                } else {
-                    $('#sec').text(timerSec);
-                }
-            }, 1000);
-    }
-    function randomBetween(min,max){
-        return Math.floor(Math.random()*(max-min+1)+min);
-    }
-    function shuffle(a) {
-        for (let i = a.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [a[i], a[j]] = [a[j], a[i]];
-        }
-        return a;
-    }
-    function removeItemArray(arr,item){
-        var array = arr;
-        var index = array.indexOf(item);
-        if (index > -1) {
-          array.splice(index, 1);
-        }
-        return array
-    }
-    function showpipa(){
-        $('#pipaKep').removeClass('hide');
-        $('#keresztKep').addClass('hide');
-        $('#pipaKep').css('opacity','1');
-        $('#keresztKep').css('opacity','0');
-    }
-    function showkereszt(){
-        $('#keresztKep').removeClass('hide');
-        $('#pipaKep').addClass('hide');
-        $('#keresztKep').css('opacity','1');
-        $('#pipaKep').css('opacity','0');
-    }
-    function hidepipa(){
-        $('#pipaKep').removeClass('hide');
-        $('#keresztKep').addClass('hide');
-        $('#pipaKep').css('opacity','0');
-        $('#keresztKep').css('opacity','0');
-    }
-    function hidekereszt(){
-        $('#pipaKep').removeClass('hide');
-        $('#keresztKep').addClass('hide');
-        $('#pipaKep').css('opacity','0');
-        $('#keresztKep').css('opacity','0');
-    }
-    function deleteKeresztPipa(){
-        $('#keresztKep').addClass('hide');
-        $('#pipaKep').addClass('hide');
-    }
-//PLAY FUNCTION
-    function play(){
-        if(hanyadik<10){
-            var nevVagySzam = randomBetween(0,1);
-            $('#hanyadik').text(hanyadik+1)
-            if(nevVagySzam){
-                allatszamok = removeItemArray(allatszamok,allatok[hanyadik].szam);
-                allatszamok = shuffle(allatszamok).slice(0,3);
-                allatszamok.push(allatok[hanyadik].szam);
-                allatszamok = shuffle(allatszamok);
-                console.log(allatszamok);
-                $('#gameSpan').append('<h1 class="marginTop1 marginBottom2 fontSize9vwMobile17vw"> ' + allatok[hanyadik].nev + '</h1>');
-                $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatszamok[0] + '</div>');
-                $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatszamok[1] + '</div>');
-                $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatszamok[2] + '</div>');
-                $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatszamok[3] + '</div>');
+  //FUNCTIONS
+      var timerSec = 0;
+      var timerMin = 0;
+      function timerStart(){
+              timerSec = 0;
+              timerMin = 0;
+              setInterval(function(){
+                  timerSec++;
+                  if(timerSec>59){
+                      timerMin++;
+                      timerSec=0;
+                      if(timerMin.toString().length == 1){
+                          $('#min').text('0'+timerMin);
+                      } else {
+                          $('#min').text(timerMin);
+                      }
+                  }
+                  if(timerSec.toString().length == 1){
+                      $('#sec').text('0'+timerSec);
+                  } else {
+                      $('#sec').text(timerSec);
+                  }
+              }, 1000);
+      }
+      function randomBetween(min,max){
+          return Math.floor(Math.random()*(max-min+1)+min);
+      }
+      function shuffle(a) {
+          for (let i = a.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [a[i], a[j]] = [a[j], a[i]];
+          }
+          return a;
+      }
+      function removeItemArray(arr,item){
+          var array = arr;
+          var index = array.indexOf(item);
+          if (index > -1) {
+            array.splice(index, 1);
+          }
+          return array
+      }
+      function showpipa(){
+          $('#pipaKep').removeClass('hide');
+          $('#keresztKep').addClass('hide');
+          $('#pipaKep').css('opacity','1');
+          $('#keresztKep').css('opacity','0');
+      }
+      function showkereszt(){
+          $('#keresztKep').removeClass('hide');
+          $('#pipaKep').addClass('hide');
+          $('#keresztKep').css('opacity','1');
+          $('#pipaKep').css('opacity','0');
+      }
+      function hidepipa(){
+          $('#pipaKep').removeClass('hide');
+          $('#keresztKep').addClass('hide');
+          $('#pipaKep').css('opacity','0');
+          $('#keresztKep').css('opacity','0');
+      }
+      function hidekereszt(){
+          $('#pipaKep').removeClass('hide');
+          $('#keresztKep').addClass('hide');
+          $('#pipaKep').css('opacity','0');
+          $('#keresztKep').css('opacity','0');
+      }
+      function deleteKeresztPipa(){
+          $('#keresztKep').addClass('hide');
+          $('#pipaKep').addClass('hide');
+      }
+  //PLAY FUNCTION
+      function play(){
+          if(hanyadik<10){
+              var nevVagySzam = randomBetween(0,1);
+              $('#hanyadik').text(hanyadik+1)
+              if(nevVagySzam){
+                  allatszamok = removeItemArray(allatszamok,allatok[hanyadik].szam);
+                  allatszamok = shuffle(allatszamok).slice(0,3);
+                  allatszamok.push(allatok[hanyadik].szam);
+                  allatszamok = shuffle(allatszamok);
+                  console.log(allatszamok);
+                  $('#gameSpan').append('<h1 class="marginTop1 marginBottom2 fontSize9vwMobile17vw"> ' + allatok[hanyadik].nev + '</h1>');
+                  $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatszamok[0] + '</div>');
+                  $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatszamok[1] + '</div>');
+                  $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatszamok[2] + '</div>');
+                  $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatszamok[3] + '</div>');
 
-                $('.divValaszthato').on('click',function(){
-                    $('.divValaszthato').unbind('click');
-                    if(Number(allatok[hanyadik].szam) == Number($(this).text())){
-                        talalat++
-                        showpipa();
-                    } else {
-                        showkereszt();
-                    }
-                    $('.divValaszthato').each(function(){
-                       if( Number(allatok[hanyadik].szam) == Number($(this).text()) ) {
-                           $(this).css({'background-color':'#11bf4c','color':'white'});
-                       } else {
-                           $(this).css({'background-color':'#ff0055','color':'white'});
-                       }
-                    });
-                    $('#gameSpan').children().css('opacity','0.6');
-                    $('#gameSpan').append('<p class="marginTop1 fontSize5vw" id="kattKoviert"><u>Kattints bárhova a következőért!</u></p>');
-                    $('#kattKoviert').css('opacity','1');
-                    setTimeout(function(){ 
-                        $('body').on('click',function(){
-                            hanyadik++;
-                            $('body').unbind('click');
-                            hidepipa();
-                            $('#gameSpan').html('');
-                            $('#gameSpan').children().css('opacity','1');
-                            play();
-                        });
-                    },10);
-                });
-            }
-            else{
-                allatnevek = removeItemArray(allatnevek,allatok[hanyadik].nev);
-                allatnevek = shuffle(allatnevek).slice(0,3);
-                allatnevek.push(allatok[hanyadik].nev);
-                allatnevek = shuffle(allatnevek);
-                console.log(allatnevek);
-                $('#gameSpan').append('<h1 class="marginTop1 marginBottom2 fontSize9vwMobile17vw"> ' + allatok[hanyadik].szam + '</h1>');
-                $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatnevek[0] + '</div>');
-                $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatnevek[1] + '</div>');
-                $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatnevek[2] + '</div>');
-                $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatnevek[3] + '</div>');
-                $('.divValaszthato').on('click',function(){
-                    $('.divValaszthato').unbind('click');
-                    if(allatok[hanyadik].nev.replace(/\s+/g, '') == $(this).text().replace(/\s+/g, '')){
-                        talalat++
-                        showpipa()
-                    } else {
-                        showkereszt();
-                    }
-                    $('.divValaszthato').each(function(){
-                       if( allatok[hanyadik].nev.replace(/\s+/g, '') == $(this).text().replace(/\s+/g, '') ) {
-                           $(this).css({'background-color':'#11bf4c','color':'white'});
-                       } else {
-                           $(this).css({'background-color':'#ff0055','color':'white'});
-                       }
-                    });
-                    $('#gameSpan').children().css('opacity','0.6');
-                    $('#gameSpan').append('<p class="marginTop1 fontSize5vw" id="kattKoviert"><u>Kattints bárhova a következőért!</u></p>');
-                    $('#kattKoviert').css('opacity','1');
-                    setTimeout(function(){ 
-                        $('body').on('click',function(){
-                            hanyadik++;
-                            $('body').unbind('click');
-                            hidepipa();
-                            $('#gameSpan').html('');
-                            $('#gameSpan').children().css('opacity','1');
-                            play();
-                        });
-                    },10);
-                });
-            }
-        }
-        else{
-            $('#spanPlay').html('');
-            var meddigJatszott = timerSec + timerMin*60;
-            var pont = Math.round(((540-meddigJatszott) + talalat*120)*1.7);
-            var hanyadikLettem = false;
-            
-            $.ajax({
-                type:'POST',
-                url:'/newResult',
-                dataType:'json',
-                data:{
-                    nev:jatekosNev,
-                    pont:pont,
-                    szekreny:szekreny
-                },
-                success:function(back){
-                    console.log(back.success)
-                    hanyadikLettem = back.success;
-                    if(timerSec.toString().length == 1){
-                        timerSec = '0'+timerSec.toString()
-                    }
-                    if(timerMin.toString().length == 1){
-                        timerMin = '0'+timerMin.toString()
-                    }
-                    deleteKeresztPipa();
-                    $('#spanPlay').append('<div id="eredmeny" class="marginTop1 marginBottom1 paddingBottom1 borderA"></div>');
-                    $('#eredmeny').append('<div style="margin:3rem 0rem 1rem 0rem"><h1><i class="far fa-smile" style="font-size:7rem;"></i></h1></div>');
-                    $('#eredmeny').append('<h1 style="margin-bottom:5rem">Szép munka!</h1>');
-                    $('#eredmeny').append('<h1 style="font-size:3em; margin-bottom:3rem"><u>'+ hanyadikLettem +'. helyezés</u></h1>');
-                    $('#eredmeny').append('<h1 style="margin:2rem 0rem">'+talalat +'/'+'10 találat</h1>');
-                    $('#eredmeny').append('<h1 style="margin:2rem 0rem">'+timerMin+':'+timerSec+' idő alatt</h1>');
-                    $('#eredmeny').append('<h1 style="margin:2rem 0rem">'+ pont +' pont</h1>');
-                    $('#eredmeny').append('<a style="margin-top:2rem;" class="btn btn-lg btn-light" href="/<%= szekreny %>/leader">Ranglista</a>');
-                },
-                error:function(){
-                    Swal.fire(
-                      'Hiba történt!',
-                      '',
-                      'error'
-                    );
-                }
-            })
-        }
-    }
-        
-        
-    });
+                  $('.divValaszthato').on('click',function(){
+                      $('.divValaszthato').unbind('click');
+                      if(Number(allatok[hanyadik].szam) == Number($(this).text())){
+                          talalat++
+                          showpipa();
+                      } else {
+                          showkereszt();
+                      }
+                      $('.divValaszthato').each(function(){
+                         if( Number(allatok[hanyadik].szam) == Number($(this).text()) ) {
+                             $(this).css({'background-color':'#11bf4c','color':'white'});
+                         } else {
+                             $(this).css({'background-color':'#ff0055','color':'white'});
+                         }
+                      });
+                      $('#gameSpan').children().css('opacity','0.6');
+                      $('#gameSpan').append('<p class="marginTop1 fontSize5vw" id="kattKoviert"><u>Kattints bárhova a következőért!</u></p>');
+                      $('#kattKoviert').css('opacity','1');
+                      setTimeout(function(){
+                          $('body').on('click',function(){
+                              hanyadik++;
+                              $('body').unbind('click');
+                              hidepipa();
+                              $('#gameSpan').html('');
+                              $('#gameSpan').children().css('opacity','1');
+                              play();
+                          });
+                      },10);
+                  });
+              }
+              else{
+                  allatnevek = removeItemArray(allatnevek,allatok[hanyadik].nev);
+                  allatnevek = shuffle(allatnevek).slice(0,3);
+                  allatnevek.push(allatok[hanyadik].nev);
+                  allatnevek = shuffle(allatnevek);
+                  console.log(allatnevek);
+                  $('#gameSpan').append('<h1 class="marginTop1 marginBottom2 fontSize9vwMobile17vw"> ' + allatok[hanyadik].szam + '</h1>');
+                  $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatnevek[0] + '</div>');
+                  $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatnevek[1] + '</div>');
+                  $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatnevek[2] + '</div>');
+                  $('#gameSpan').append('<div class="divValaszthato noselectText"> ' + allatnevek[3] + '</div>');
+                  $('.divValaszthato').on('click',function(){
+                      $('.divValaszthato').unbind('click');
+                      if(allatok[hanyadik].nev.replace(/\s+/g, '') == $(this).text().replace(/\s+/g, '')){
+                          talalat++
+                          showpipa()
+                      } else {
+                          showkereszt();
+                      }
+                      $('.divValaszthato').each(function(){
+                         if( allatok[hanyadik].nev.replace(/\s+/g, '') == $(this).text().replace(/\s+/g, '') ) {
+                             $(this).css({'background-color':'#11bf4c','color':'white'});
+                         } else {
+                             $(this).css({'background-color':'#ff0055','color':'white'});
+                         }
+                      });
+                      $('#gameSpan').children().css('opacity','0.6');
+                      $('#gameSpan').append('<p class="marginTop1 fontSize5vw" id="kattKoviert"><u>Kattints bárhova a következőért!</u></p>');
+                      $('#kattKoviert').css('opacity','1');
+                      setTimeout(function(){
+                          $('body').on('click',function(){
+                              hanyadik++;
+                              $('body').unbind('click');
+                              hidepipa();
+                              $('#gameSpan').html('');
+                              $('#gameSpan').children().css('opacity','1');
+                              play();
+                          });
+                      },10);
+                  });
+              }
+          }
+          else{
+              $('#spanPlay').html('');
+              var meddigJatszott = timerSec + timerMin*60;
+              var pont = Math.round(((540-meddigJatszott) + talalat*120)*1.7);
+              var hanyadikLettem = false;
+
+              $.ajax({
+                  type:'POST',
+                  url:'/newResult',
+                  dataType:'json',
+                  data:{
+                      nev:jatekosNev,
+                      pont:pont,
+                      szekreny:szekreny
+                  },
+                  success:function(back){
+                      console.log(back.success)
+                      hanyadikLettem = back.success;
+                      if(timerSec.toString().length == 1){
+                          timerSec = '0'+timerSec.toString()
+                      }
+                      if(timerMin.toString().length == 1){
+                          timerMin = '0'+timerMin.toString()
+                      }
+                      deleteKeresztPipa();
+                      $('#spanPlay').append('<div id="eredmeny" class="marginTop1 marginBottom1 paddingBottom1 borderA"></div>');
+                      $('#eredmeny').append('<div style="margin:3rem 0rem 1rem 0rem"><h1><i class="far fa-smile" style="font-size:7rem;"></i></h1></div>');
+                      $('#eredmeny').append('<h1 style="margin-bottom:5rem">Szép munka!</h1>');
+                      $('#eredmeny').append('<h1 style="font-size:3em; margin-bottom:3rem"><u>'+ hanyadikLettem +'. helyezés</u></h1>');
+                      $('#eredmeny').append('<h1 style="margin:2rem 0rem">'+talalat +'/'+'10 találat</h1>');
+                      $('#eredmeny').append('<h1 style="margin:2rem 0rem">'+timerMin+':'+timerSec+' idő alatt</h1>');
+                      $('#eredmeny').append('<h1 style="margin:2rem 0rem">'+ pont +' pont</h1>');
+                      $('#eredmeny').append('<a style="margin-top:2rem;" class="btn btn-lg btn-light" href="/<%= szekreny %>/leader">Ranglista</a>');
+                  },
+                  error:function(){
+                      Swal.fire(
+                        'Hiba történt!',
+                        '',
+                        'error'
+                      );
+                  }
+              })
+          }
+      }
+
+
+      });
 </script>
-
-
