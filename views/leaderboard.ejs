@@ -1,4 +1,8 @@
-<!DOCTYPE html><html><head><%- include('partials/head') %></head>
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('partials/head') %>
+  </head>
   <body style="background-color: #b0e0e6">
     <div class="container marginAuto">
       <center>
@@ -6,7 +10,7 @@
           Ranglista
         </h1>
         <h1 class="margin1 fontSize4remMobile9vw fontFamilyGeorgia">
-          (Room <%= szekreny %>)
+          <%= roomName || 'Room ' + szekreny %>
         </h1>
 
         <table
@@ -26,7 +30,12 @@
               <th scope="row"><%= index+1 %>.</th>
               <td><%= ember.nev %></td>
               <td><%= ember.pont %></td>
-              <td><%= ember.created.toDateString().slice(3,15) || "-" %></td>
+              <td
+                class="date-cell"
+                data-date="<%= ember.created.toISOString() %>"
+              >
+                -
+              </td>
             </tr>
             <% }) %>
           </tbody>
@@ -37,5 +46,18 @@
         >
       </center>
     </div>
+
+    <script>
+      // Format dates using browser's locale settings
+      $(document).ready(function () {
+        $(".date-cell").each(function () {
+          var dateStr = $(this).data("date");
+          if (dateStr) {
+            var date = new Date(dateStr);
+            $(this).text(date.toLocaleDateString());
+          }
+        });
+      });
+    </script>
   </body>
 </html>

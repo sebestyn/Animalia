@@ -2,54 +2,77 @@
 <html>
   <head>
     <%- include('partials/head') %>
+    <style>
+      .home-container {
+        padding: 2rem 1rem;
+      }
+      @media only screen and (max-width: 600px) {
+        .home-container {
+          padding: 1rem 0.5rem;
+        }
+      }
+    </style>
   </head>
-  <body style="background-color: #b0e0e6">
-    <div class="container marginAuto">
+  <body
+    style="
+      background-color: #b0e0e6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    "
+  >
+    <div class="container marginAuto home-container">
       <center>
-        <h1 class="marginTop1 fontSize9vwMobile17vw fontFamilyGeorgia">
+        <h1 class="fontSize9vwMobile17vw fontFamilyGeorgia margin0">
           Animalia
         </h1>
-        <p class="margin1 fontSize1p2 grey">
-          Ez a játék a Kölcsey Ferenc Gimnázium tanulók részére készült.
+        <p
+          class="fontSize1p2 grey"
+          style="margin-top: 0.25rem; margin-bottom: 0"
+        >
+          Kölcsey Ferenc Gimnázium tanulók részére
         </p>
 
         <div class="marginTop2">
-          <h2 class="fontSize2rem fontFamilyGeorgia">
-            🎮 Játék menete
-          </h2>
-          
-          <table class="table table-striped bordered table-light alignCenter marginTop1">
-            <thead class="thead-dark">
-              <tr>
-                <th scope="col" width="10%">#</th>
-                <th scope="col">Lépés</th>
-              </tr>
-            </thead>
+          <h2 class="fontSize2rem fontFamilyGeorgia">🎮 Hogyan játsszunk?</h2>
+
+          <table
+            class="table table-striped bordered table-light alignCenter marginTop1"
+          >
             <tbody>
               <tr>
                 <th scope="row">1</th>
-                <td class="text-left">Olvasd be a QR kódot az egyik állatos szekrényről</td>
+                <td class="text-left">Olvasd be a QR kódot a szekrényről</td>
               </tr>
               <tr>
                 <th scope="row">2</th>
-                <td class="text-left">Add meg a beceneved</td>
+                <td class="text-left">Írd be a nevedet</td>
               </tr>
               <tr>
                 <th scope="row">3</th>
-                <td class="text-left">Ha feldob egy számot, keresd meg a szekrényben a cetlit amin ugyanaz a szám van, és találd ki milyen állat van mögötte</td>
+                <td class="text-left">
+                  A játék feldob egy <strong>számot</strong> vagy egy
+                  <strong>állatnevet</strong>
+                </td>
               </tr>
               <tr>
                 <th scope="row">4</th>
-                <td class="text-left">Ha egy állatnevet dob fel, találd ki melyik számú cetlihez tartozik</td>
+                <td class="text-left">
+                  Ha számot látsz → találd ki melyik állat van mögötte<br />
+                  Ha nevet látsz → találd ki melyik számon van
+                </td>
               </tr>
               <tr>
                 <th scope="row">5</th>
-                <td class="text-left">Figyelj, az idő is számít!</td>
+                <td class="text-left">
+                  10 kérdés van, minél gyorsabb vagy, annál több pontot kapsz!
+                  ⏱️
+                </td>
               </tr>
             </tbody>
           </table>
 
-          <h2 class="marginTop2 fontSize3rem fontFamilyGeorgia">
+          <h2 class="marginTop2 fontSize2rem fontFamilyGeorgia">
             🎯 Sok sikert!
           </h2>
         </div>

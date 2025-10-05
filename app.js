@@ -5,9 +5,12 @@ import { config } from "dotenv";
 config();
 
 app.use(express.static("public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //DATABASE
 var szekrenySchema = new Schema({
+  name: String,
   szekreny: Number,
   allatok: [
     {
@@ -70,9 +73,12 @@ app.get("/:szekreny/leader", async function (req, res) {
     try {
       const data = await szekrenyDB.findOne({ szekreny: szekreny });
       const leader = await leaderDB.findOne({ szekreny: szekreny });
-      var leaders = leader.leaders;
+      var leaders = filterBySchoolYear(leader.leaders);
+      leaders = sortObj(leaders, "pont");
+      leaders.reverse();
       res.render("leaderboard.ejs", {
         szekreny: szekreny,
+        roomName: data?.name || null,
         leaders: leaders,
       });
     } catch (err) {
@@ -91,8 +97,16 @@ app.get("/:szekreny", async function (req, res) {
     try {
       const data = await szekrenyDB.findOne({ szekreny: szekreny });
       const leader = await leaderDB.findOne({ szekreny: szekreny });
-      var leaders = leader && leader.leaders ? leader.leaders.slice(0, 3) : [];
-      res.render("start.ejs", { szekreny: szekreny, leaders: leaders });
+      var leaders =
+        leader && leader.leaders ? filterBySchoolYear(leader.leaders) : [];
+      leaders = sortObj(leaders, "pont");
+      leaders.reverse();
+      leaders = leaders.slice(0, 3);
+      res.render("start.ejs", {
+        szekreny: szekreny,
+        roomName: data?.name || null,
+        leaders: leaders,
+      });
     } catch (err) {
       console.log(err);
       res.status(500).send("Error loading page");
@@ -117,11 +131,20 @@ app.get("/:szekreny/play", async function (req, res) {
         szamok.push(allat.szam);
         nevek.push(allat.nev);
       });
+
+      // Get existing player names from leaderboard
+      const leaderData = await leaderDB.findOne({ szekreny: szekreny });
+      const existingNames = leaderData
+        ? leaderData.leaders.map((l) => l.nev)
+        : [];
+
       res.render("play.ejs", {
         szekreny: szekreny,
+        roomName: data?.name || null,
         allatok: allatok,
         szamok: szamok,
         nevek: nevek,
+        existingNames: existingNames,
       });
     } catch (err) {
       console.log(err);
@@ -131,6 +154,7 @@ app.get("/:szekreny/play", async function (req, res) {
     res.redirect("/");
   }
 });
+
 //ÚJ EREDMÉNY MENTÉSE
 app.post("/newResult", async function (req, res) {
   var szekreny = req.body.szekreny;
@@ -139,15 +163,35 @@ app.post("/newResult", async function (req, res) {
   var hanyadik = 0;
   try {
     const szekrenyDoc = await leaderDB.findOne({ szekreny: szekreny });
-    szekrenyDoc.leaders.push({
-      nev: nev,
-      pont: pont,
-    });
-    szekrenyDoc.leaders = sortObj(szekrenyDoc.leaders, "pont");
-    szekrenyDoc.leaders.reverse();
-    var index = szekrenyDoc.leaders.findIndex((x) => x.nev == nev);
-    hanyadik = index + 1;
+
+    // Check if player already exists
+    const existingLeader = szekrenyDoc.leaders.find((x) => x.nev === nev);
+
+    if (existingLeader) {
+      // Update only if new score is higher
+      if (pont > existingLeader.pont) {
+        existingLeader.pont = pont;
+        existingLeader.created = new Date(); // Update timestamp
+      }
+    } else {
+      // Add new player
+      szekrenyDoc.leaders.push({
+        nev: nev,
+        pont: pont,
+      });
+    }
+
     await szekrenyDoc.save();
+
+    // Filter by school year and sort for ranking calculation
+    var schoolYearLeaders = filterBySchoolYear(szekrenyDoc.leaders);
+    schoolYearLeaders = sortObj(schoolYearLeaders, "pont");
+    schoolYearLeaders.reverse();
+
+    // Find player's rank by name (now guaranteed to be unique)
+    var index = schoolYearLeaders.findIndex((x) => x.nev === nev);
+    hanyadik = index + 1;
+
     res.status(200).send({ success: hanyadik });
   } catch (err) {
     console.log(err);
@@ -172,6 +216,39 @@ app.get("/db/clear", async function (req, res) {
 });
 
 //FUNCTION
+// GET CURRENT SCHOOL YEAR DATE RANGE
+function getSchoolYearRange() {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth(); // 0-11 (0=January)
+
+  let startYear, endYear;
+
+  // If we're in September-December (months 8-11), school year started this year
+  if (currentMonth >= 8) {
+    startYear = currentYear;
+    endYear = currentYear + 1;
+  } else {
+    // If we're in January-August (months 0-7), school year started last year
+    startYear = currentYear - 1;
+    endYear = currentYear;
+  }
+
+  const startDate = new Date(startYear, 8, 1); // September 1
+  const endDate = new Date(endYear, 8, 1); // September 1 of next year (exclusive)
+
+  return { startDate, endDate };
+}
+
+// FILTER LEADERS BY CURRENT SCHOOL YEAR
+function filterBySchoolYear(leaders) {
+  const { startDate, endDate } = getSchoolYearRange();
+  return leaders.filter((leader) => {
+    const createdDate = new Date(leader.created);
+    return createdDate >= startDate && createdDate < endDate;
+  });
+}
+
 //SHUFFLE ARRAY
 function shuffle(a) {
   for (let i = a.length - 1; i > 0; i--) {

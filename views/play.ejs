@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <% customCSS = 'play.css' %>
-    <%- include('partials/head') %>
+    <% customCSS = 'play.css' %> <%- include('partials/head') %>
   </head>
   <body style="background-color: #b0e0e6">
     <div class="container marginAuto">
@@ -30,7 +29,7 @@
               Animalia
             </h1>
             <h1 class="margin1 fontSize4remMobile9vw fontFamilyGeorgia">
-              (Room <%= szekreny %>)
+              <%= roomName || 'Room ' + szekreny %>
             </h1>
 
             <div class="input-group mb-3 width30pcmobile90pc marginTop3">
@@ -43,10 +42,6 @@
               />
             </div>
             <a class="btn btn-light margin1 btn-lg play">Indítás</a>
-            <p style="font-size: 0.7rem">
-              Indítás gomb megnyovásával hozzájárulok, hogy a nevemet és a
-              szerzett pontomat bárki láthatja és felhasználhatja.
-            </p>
           </div>
         </span>
         <span id="spanPlay" class="hide"></span>
@@ -56,8 +51,20 @@
 </html>
 
 <script>
+      // Check for saved username on page load
+      $(document).ready(function(){
+          var savedNev = localStorage.getItem('animaliaPlayerName');
+          if(savedNev){
+              $('.nev').val(savedNev);
+              $('.nev').prop('disabled', true);
+          }
+      });
+
       $('.play').on('click',function(){
           var jatekosNev = $('.nev').val();
+          var savedNev = localStorage.getItem('animaliaPlayerName');
+          var existingNames = <%- JSON.stringify(existingNames) %>;
+
           if(jatekosNev == ''){
               Swal.fire(
                 'Nem lehet üres!',
@@ -68,6 +75,12 @@
               Swal.fire(
                 'Minimum 3 és maximum 20 karakterből kell, hogy álljon!',
                 '',
+                'error'
+              );
+          } else if(existingNames.includes(jatekosNev) && jatekosNev !== savedNev) {
+              Swal.fire(
+                'Ez a név már foglalt!',
+                'Kérlek válassz másikat!',
                 'error'
               );
           } else {
@@ -252,6 +265,9 @@
               var meddigJatszott = timerSec + timerMin*60;
               var pont = Math.round(((540-meddigJatszott) + talalat*120)*1.7);
               var hanyadikLettem = false;
+
+              // Save username to localStorage before submitting result
+              localStorage.setItem('animaliaPlayerName', jatekosNev);
 
               $.ajax({
                   type:'POST',
