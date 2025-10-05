@@ -41,9 +41,9 @@ Animalia is a web-based quiz game designed for students at K√∂lcsey Ferenc Gimn√
 
 ### Frontend
 - **jQuery** v3.3.1 - DOM manipulation and AJAX
-- **Bootstrap** v4.3.1 - UI framework and responsive grid
 - **SweetAlert2** v7.33.1 - Beautiful alert dialogs
-- **Font Awesome** v5.8.1 - Icon library
+- **Unicode Emojis** - Visual icons (no external dependencies)
+- **Custom CSS** - Lightweight custom styles (~9 KB) with Bootstrap-like utilities
 
 ### Database
 - **MongoDB** - NoSQL document database

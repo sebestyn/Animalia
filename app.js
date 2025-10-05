@@ -39,11 +39,6 @@ app.get("/", function (req, res) {
   res.render("home.ejs");
 });
 
-//INFO OLDAL
-app.get("/info", function (req, res) {
-  res.render("info.ejs");
-});
-
 //HOZZÁADÁS ADMIN OLDAL
 app.get("/pushAdmin", function (req, res) {
   res.render("push.ejs");
