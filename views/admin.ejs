@@ -129,7 +129,13 @@
 
               <!-- Leaders Section -->
               <div class="card-section">
-                <h3 class="section-title">Ranglista (${szekreny.leaders.length})</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                  <h3 class="section-title">Ranglista (${szekreny.leaders.length})</h3>
+                  <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <input type="checkbox" id="filter-checkbox-${index}" onchange="toggleSchoolYearFilter(${index})" />
+                    <span>Csak idei eredmények</span>
+                  </label>
+                </div>
                 <div id="leaders-container-${index}">
                   ${renderLeadersEditable(szekreny.leaders, index)}
                 </div>
@@ -166,24 +172,63 @@
         return html;
       }
 
+      // Filter leaders by current school year
+      function filterBySchoolYear(leaders) {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth(); // 0-11 (0=January)
+
+        let startYear, endYear;
+
+        // If we're in September-December (months 8-11), school year started this year
+        if (currentMonth >= 8) {
+          startYear = currentYear;
+          endYear = currentYear + 1;
+        } else {
+          // If we're in January-August (months 0-7), school year started last year
+          startYear = currentYear - 1;
+          endYear = currentYear;
+        }
+
+        const startDate = new Date(startYear, 8, 1); // September 1
+        const endDate = new Date(endYear, 8, 1); // September 1 of next year (exclusive)
+
+        return leaders.filter(leader => {
+          const createdDate = new Date(leader.created);
+          return createdDate >= startDate && createdDate < endDate;
+        });
+      }
+
       // Render editable leaders
-      function renderLeadersEditable(leaders, szekrenyIndex) {
+      function renderLeadersEditable(leaders, szekrenyIndex, filterSchoolYear = false) {
         if (leaders.length === 0) {
           return '<div class="empty-state">Még nincs eredmény</div>';
         }
 
-        // Sort by date
-        const sorted = [...leaders].sort((a, b) => new Date(b.created) - new Date(a.created));
+        // Apply school year filter if checkbox is checked
+        let displayLeaders = filterSchoolYear ? filterBySchoolYear(leaders) : leaders;
 
-        let html = '<table class="admin-table"><thead><tr><th>Név</th><th>Pont</th><th>Dátum</th><th style="width: 100px;">Műveletek</th></tr></thead><tbody>';
+        if (displayLeaders.length === 0) {
+          return '<div class="empty-state">Nincs idei eredmény</div>';
+        }
 
-        sorted.forEach((leader, leaderIndex) => {
-          // Find original index
-          const originalIndex = leaders.findIndex(l => l.nev === leader.nev && l.pont === leader.pont);
+        // Sort by point
+        const sorted = [...displayLeaders].sort((a, b) => b.pont - a.pont);
+
+        let html = '<table class="admin-table"><thead><tr><th>#</th><th>Név</th><th>Pont</th><th>Dátum</th><th style="width: 100px;">Műveletek</th></tr></thead><tbody>';
+
+        sorted.forEach((leader, i) => {
+          // Find original index in the full unfiltered array
+          const originalIndex = leaders.findIndex(l =>
+            l.nev === leader.nev &&
+            l.pont === leader.pont &&
+            new Date(l.created).getTime() === new Date(leader.created).getTime()
+          );
           const date = new Date(leader.created);
 
           html += `
             <tr>
+              <th scope="row">${i + 1}</th>
               <td>${leader.nev}</td>
               <td>${leader.pont}</td>
               <td>${date.toLocaleDateString()}</td>
@@ -198,6 +243,18 @@
 
         html += '</tbody></table>';
         return html;
+      }
+
+      // Toggle school year filter
+      function toggleSchoolYearFilter(index) {
+        const checkbox = $(`#filter-checkbox-${index}`);
+        const isChecked = checkbox.is(':checked');
+        const szekreny = szekrenysData[index];
+
+        // Re-render leaders with or without filter
+        $(`#leaders-container-${index}`).html(
+          renderLeadersEditable(szekreny.leaders, index, isChecked)
+        );
       }
 
       // Toggle card open/close
@@ -262,9 +319,13 @@
       function refreshSzekreny(index) {
         const szekreny = szekrenysData[index];
 
+        // Check if filter checkbox is checked
+        const checkbox = $(`#filter-checkbox-${index}`);
+        const isChecked = checkbox.is(':checked');
+
         $(`#szekreny-name-${index}`).text(szekreny.name);
         $(`#allatok-container-${index}`).html(renderAllatokEditable(szekreny.allatok, index));
-        $(`#leaders-container-${index}`).html(renderLeadersEditable(szekreny.leaders, index));
+        $(`#leaders-container-${index}`).html(renderLeadersEditable(szekreny.leaders, index, isChecked));
 
         // Update counts in header
         $(`.szekreny-card[data-index="${index}"] .section-title`).each(function() {
